@@ -1,0 +1,19 @@
+{
+  "name": "node_tcp_pax",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node app.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "crypto": "^1.0.1",
+    "express": "^4.18.2",
+    "net": "^1.0.2",
+    "winston": "^3.9.0",
+    "winston-daily-rotate-file": "^4.7.1"
+  }
+}

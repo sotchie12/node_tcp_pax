@@ -1,0 +1,22 @@
+{
+    "express_port": "5002",
+    "json_upload_limit": {
+        "limit": "50mb"
+    },
+    "tcp": {
+        "pax_ip": "127.0.0.1",
+        "pax_port": "7070"
+    },
+    "express": {},
+    "log_options": {
+        "LOG_PATH": "/logs",
+        "_iLOG_FILE_MAXSIZE": "1MB",
+        "_iLOG_FILE_COUNT": 4,
+        "sMQTTRemoteLogTopic": "",
+        "sMQTTRemoteLogHost": ""
+    },
+    "logger": {
+        "LOG_NAME": "%DATE%.log",
+        "level": "debug"
+    }
+}
