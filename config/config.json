@@ -5,7 +5,7 @@
     },
     "tcp": {
         "pax_ip": "127.0.0.1",
-        "pax_port": "7070"
+        "pax_port": 7070
     },
     "express": {},
     "log_options": {
