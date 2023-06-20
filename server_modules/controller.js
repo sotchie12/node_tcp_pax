@@ -28,10 +28,12 @@ async function saleReceived(req, res) {
 
         logger.log("info", `saleObj: ${JSON.stringify(saleObj)}`)
 
-        run(JSON.stringify(saleObj))
+        //run(JSON.stringify(saleObj))
         
-        //const client = new tcp_client();
-        //client.sendMessage(JSON.stringify(saleObj))
+        const client = new tcp_client();
+        const result = await client.sendMessage(JSON.stringify(saleObj));
+        const strResult = result.toString()
+        logger.log("info", `data received from server: ${strResult}`)
 
         //client.sendMessage("{\"checksum\":\"00671fb929f3103b419c56c410e4a1d383d17e9949660143185a95a4022ff298\",\"data\":{\"amt\":\"6560\",\"detail\":\"Y\",\"ecrRef\":\"TXN019600223022143009970\"},\"dataType\":\"sale\"}")
 

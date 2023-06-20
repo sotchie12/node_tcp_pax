@@ -35,9 +35,11 @@ class Client {
 
             client.socket.on('data', (data) => {
                 resolve(data);
+                /*
                 if (data.toString().endsWith('exit')) {
                     client.socket.destroy();
                 }
+                */
             });
 
             client.socket.on('error', (err) => {
