@@ -26,8 +26,8 @@ async function enquiryReceived(req, res) {
 async function saleReceived(req, res) {
     try {
         const obj = req.body
-        const checkSum = await getCheckSum(`{"data":{"amt":"${obj.price}"},"dataType":"sale"}`)
-        const salePayload = `{"checksum":"${checkSum}","data":{"amt":"${obj.price}"},"dataType":"sale"}`
+        const checkSum = await getCheckSum(`{"data":{"amt":"${obj.price * 100}"},"dataType":"sale"}`)
+        const salePayload = `{"checksum":"${checkSum}","data":{"amt":"${obj.price * 100}"},"dataType":"sale"}`
         client = new tcp_client();
         client.init(onSaleMessageReceived);
         client.sendMessage(`${salePayload}\r\n`);
