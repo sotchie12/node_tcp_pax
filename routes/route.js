@@ -9,7 +9,10 @@ router.use(express.urlencoded({ extended: true }));
 
 //Rest API routes
 router.get('/', controller.baseTest);
+router.get('/enquiry', controller.enquiryReceived);
+
 router.post('/sale', controller.saleReceived);
+router.post('/settle', controller.settleReceived);
 
 
 module.exports = router;

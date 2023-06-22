@@ -13,14 +13,15 @@ class Client {
         this.socket = new net.Socket();
         this.address = address || HOST;
         this.port = port || PORT;
-        this.init();
     }
 
-    init() {
+    init(onMessage) {
         var client = this;
         client.socket.connect(client.port, client.address, () => {
             logger.log("info", `Client connected to: ${client.address} :  ${client.port}`);
         });
+
+        client.socket.on('data', onMessage);
 
         client.socket.on('close', () => {
             logger.log("info", 'Client closed');
@@ -29,24 +30,7 @@ class Client {
 
     sendMessage(message) {
         var client = this;
-        return new Promise((resolve, reject) => {
-
-            client.socket.write(message);
-
-            client.socket.on('data', (data) => {
-                resolve(data);
-                /*
-                if (data.toString().endsWith('exit')) {
-                    client.socket.destroy();
-                }
-                */
-            });
-
-            client.socket.on('error', (err) => {
-                reject(err);
-            });
-
-        });
+        client.socket.write(message);
     }
 }
 module.exports = Client;

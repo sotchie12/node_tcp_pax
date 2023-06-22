@@ -9,21 +9,21 @@ server.listen(port, host, () => {
 
 let sockets = [];
 
-server.on('connection', function(sock) {
+server.on('connection', function (sock) {
     console.log('CONNECTED: ' + sock.remoteAddress + ':' + sock.remotePort);
     sockets.push(sock);
 
-    sock.on('data', function(data) {
+    sock.on('data', function (data) {
         console.log('DATA ' + sock.remoteAddress + ': ' + data);
         // Write the data back to all the connected, the client will receive it as data from the server
-        sockets.forEach(function(sock, index, array) {
-            sock.write(sock.remoteAddress + ':' + sock.remotePort + " said " + data + '\n');
-        });
+
+        //sock.write('{"dataType":"ack"}');
+        sock.write(data);
     });
 
     // Add a 'close' event handler to this instance of socket
-    sock.on('close', function(data) {
-        let index = sockets.findIndex(function(o) {
+    sock.on('close', function (data) {
+        let index = sockets.findIndex(function (o) {
             return o.remoteAddress === sock.remoteAddress && o.remotePort === sock.remotePort;
         })
         if (index !== -1) sockets.splice(index, 1);

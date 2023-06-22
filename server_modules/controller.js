@@ -4,38 +4,44 @@ const _bDebug_mode = process.argv.indexOf("debug") >= 0;
 const logger = server_logger.SERVER_LOGGING(__dirname + '/../logs/controller.log', { level: _bDebug_mode ? 'debug' : 'info' });
 const tcp_client = require('./tcp_client');
 const { getCheckSum } = require('./sha256Util');
-const { run } = require('./telnet_client');
 
-let paymentResult = {}
+let saleResult = {};
+let settleResult = {};
+
 
 async function baseTest(req, res) {
     logger.log("info", `Base test received`)
     res.send({ test: "success" })
 }
 
+async function enquiryReceived(req, res) {
+    try {
+        res.json(saleResult)
+    } catch (e) {
+        logger.log("error", `saleReceived error: ${e.message || e}`);
+        res.status(400).send({ code: 400, msg: "Request Failed" });
+    }
+}
+
 async function saleReceived(req, res) {
     try {
         const obj = req.body
-
-        let saleObj = {
-            data: { amt: obj.price },
-            dataType: "sale"
-        }
-
-        const checkSum = await getCheckSum(JSON.stringify(saleObj))
-
-        saleObj.checksum = checkSum
-
-        logger.log("info", `saleObj: ${JSON.stringify(saleObj)}`)
-
-        //run(JSON.stringify(saleObj))
-        
+        const checkSum = await getCheckSum(`{"data":{"amt":"${obj.price}"},"dataType":"sale"}`)
+        const salePayload = `{"checksum":"${checkSum}","data":{"amt":"${obj.price}"},"dataType":"sale"}`
         const client = new tcp_client();
-        const result = await client.sendMessage(JSON.stringify(saleObj));
-        const strResult = result.toString()
-        logger.log("info", `data received from server: ${strResult}`)
+        client.init(onSaleMessageReceived);
+        client.sendMessage(`${salePayload}\r\n`);
+        saleResult = {}
 
-        //client.sendMessage("{\"checksum\":\"00671fb929f3103b419c56c410e4a1d383d17e9949660143185a95a4022ff298\",\"data\":{\"amt\":\"6560\",\"detail\":\"Y\",\"ecrRef\":\"TXN019600223022143009970\"},\"dataType\":\"sale\"}")
+        res.send({ code: 200, msg: "success" })
+    } catch (e) {
+        logger.log("error", `saleReceived error: ${e.message || e}`);
+        res.status(400).send({ code: 400, msg: "Request Failed" });
+    }
+}
+
+async function settleReceived(req, res) {
+    try {
 
         res.send({ code: 200, msg: "success" })
     } catch (e) {
@@ -45,8 +51,43 @@ async function saleReceived(req, res) {
 }
 
 
+async function onSaleMessageReceived(data) {
+    const resultStr = data.toString()
+    const resultObj = safeJsonParse(resultStr)
+
+    if (resultObj.dataType == "sale") {
+        logger.log("info", `Received transaction details from server: ${resultStr}`);
+        saleResult = resultObj;
+    } else {
+        logger.log("info", `Received message from server: ${data}`);
+    }
+}
+
+async function onSettleMessageReceived(data) {
+    const resultStr = data.toString()
+    const resultObj = safeJsonParse(resultStr)
+
+    logger.log("info", `Received settle message from server: ${data}`);
+
+    if (resultObj.dataType == "settle") {
+
+    }
+}
+
+
+function safeJsonParse(json) {
+    let parsed;
+    try { parsed = JSON.parse(json); }
+    catch (e) {
+        logger.log("info", `safeJsonParse: ${e.message || e}`);
+    }
+    return parsed;
+};
+
 module.exports = {
     baseTest,
-    saleReceived
+    enquiryReceived,
+    saleReceived,
+    settleReceived,
 };
 
