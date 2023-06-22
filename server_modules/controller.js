@@ -7,7 +7,7 @@ const { getCheckSum } = require('./sha256Util');
 
 let saleResult = {};
 let settleResult = {};
-
+let client = null;
 
 async function baseTest(req, res) {
     logger.log("info", `Base test received`)
@@ -28,7 +28,7 @@ async function saleReceived(req, res) {
         const obj = req.body
         const checkSum = await getCheckSum(`{"data":{"amt":"${obj.price}"},"dataType":"sale"}`)
         const salePayload = `{"checksum":"${checkSum}","data":{"amt":"${obj.price}"},"dataType":"sale"}`
-        const client = new tcp_client();
+        client = new tcp_client();
         client.init(onSaleMessageReceived);
         client.sendMessage(`${salePayload}\r\n`);
         saleResult = {}
@@ -58,6 +58,7 @@ async function onSaleMessageReceived(data) {
     if (resultObj.dataType == "sale") {
         logger.log("info", `Received transaction details from server: ${resultStr}`);
         saleResult = resultObj;
+        client.sendMessage(`{"dataType":"ack"}`);
     } else {
         logger.log("info", `Received message from server: ${data}`);
     }
