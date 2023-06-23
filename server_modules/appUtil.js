@@ -1,4 +1,3 @@
-const config = require(`../config/config.json`);
 const server_logger = require("./serverLogger.js");
 const _bDebug_mode = process.argv.indexOf("debug") >= 0;
 const logger = server_logger.SERVER_LOGGING(__dirname + '/../logs/controller.log', { level: _bDebug_mode ? 'debug' : 'info' });

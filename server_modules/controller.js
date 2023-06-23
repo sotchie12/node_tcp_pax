@@ -57,33 +57,39 @@ async function settleReceived(req, res) {
     }
 }
 
-
 async function onSaleMessageReceived(data) {
-    const resultStr = data.toString()
-    const resultObj = appUtils.safeJsonParse(resultStr)
+    try {
+        const resultStr = data.toString()
+        const resultObj = appUtils.safeJsonParse(resultStr)
 
-    if (resultObj.dataType == "sale") {
-        logger.log("info", `Received sale transaction details from server: ${resultStr}`);
-        saleResult = resultObj;
-        client.sendMessage(`{"dataType":"ack"}`);
-    } else {
-        logger.log("info", `Received sale message from server: ${data}`);
+        if (resultObj.dataType == "sale") {
+            logger.log("info", `Received sale transaction details from server: ${resultStr}`);
+            saleResult = resultObj;
+            client.sendMessage(`{"dataType":"ack"}`);
+        } else {
+            logger.log("info", `Received sale message from server: ${data}`);
+        }
+    } catch (e) {
+        logger.log("error", `onSaleMessageReceived error: ${e.message || e}`);
     }
 }
 
 async function onSettleMessageReceived(data) {
-    const resultStr = data.toString()
-    const resultObj = appUtils.safeJsonParse(resultStr)
+    try {
+        const resultStr = data.toString()
+        const resultObj = appUtils.safeJsonParse(resultStr)
 
-    if (resultObj.dataType == "settle") {
-        logger.log("info", `Received settle transaction details from server: ${resultStr}`);
-        saleResult = resultObj;
-        client.sendMessage(`{"dataType":"ack"}`);
-    } else {
-        logger.log("info", `Received settle message from server: ${data}`);
+        if (resultObj.dataType == "settle") {
+            logger.log("info", `Received settle transaction details from server: ${resultStr}`);
+            saleResult = resultObj;
+            client.sendMessage(`{"dataType":"ack"}`);
+        } else {
+            logger.log("info", `Received settle message from server: ${data}`);
+        }
+    } catch (e) {
+        logger.log("error", `onSaleMessageReceived error: ${e.message || e}`);
     }
 }
-
 
 module.exports = {
     baseTest,
@@ -91,4 +97,3 @@ module.exports = {
     saleReceived,
     settleReceived,
 };
-
