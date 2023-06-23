@@ -7,6 +7,10 @@
         "pax_ip": "127.0.0.1",
         "pax_port": 7070
     },
+    "settle":{
+        "acqname" : "FDMS-V/M",
+        "pwd" : "000000"
+    },
     "express": {},
     "log_options": {
         "LOG_PATH": "/logs",
