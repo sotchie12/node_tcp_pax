@@ -65,7 +65,7 @@ async function onSaleMessageReceived(data) {
         if (resultObj.dataType == "sale") {
             logger.log("info", `Received sale transaction details from server: ${resultStr}`);
             saleResult = resultObj;
-            client.sendMessage(`{"dataType":"ack"}`);
+            client.sendMessage(`{"dataType":"ack"\r\n`);
         } else {
             logger.log("info", `Received sale message from server: ${data}`);
         }
@@ -82,7 +82,7 @@ async function onSettleMessageReceived(data) {
         if (resultObj.dataType == "settle") {
             logger.log("info", `Received settle transaction details from server: ${resultStr}`);
             saleResult = resultObj;
-            client.sendMessage(`{"dataType":"ack"}`);
+            client.sendMessage(`{"dataType":"ack"}\r\n`);
         } else {
             logger.log("info", `Received settle message from server: ${data}`);
         }
